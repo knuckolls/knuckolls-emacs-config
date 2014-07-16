@@ -6,10 +6,9 @@
 
 (server-start)
 
-(mapc (lambda(mode) (when (fboundp mode) (apply mode '(-1))))
-      '(tool-bar-mode
-        menu-bar-mode
-        scroll-bar-mode))
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
 
 (setq ring-bell-function #'ignore
       inhibit-startup-screen t
@@ -25,8 +24,7 @@
 ;; Set up use-package.el and package.el
 ;; ;;;;;;;;;;;;;;;;;;
 
-(mapc (lambda (p) (push p load-path))
-      '("~/.emacs.d/use-package/"))
+(push "~/.emacs.d/use-package/" load-path)
 
 (require 'package)
 (require 'use-package)
@@ -64,9 +62,6 @@
 (use-package paredit
   :ensure t)
 
-(use-package powerline
-  :ensure t)
-
 (use-package projectile
   :ensure t)
 
@@ -80,8 +75,7 @@
   :ensure t)
 
 (use-package smex
-  :bind (("M-x" . smex)
-         ("C-c M-x" . execute-extended-command))
+  :bind (("M-x" . smex))
   :ensure t)
 
 (use-package switch-window
