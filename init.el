@@ -18,7 +18,28 @@
 
 (winner-mode 1)
 
-(push "/usr/local/bin" exec-path)
+;; (push "/usr/local/bin" exec-path)
+
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
+
+(setenv "PATH" (concat (getenv "HOME") "/bin" ":"
+                       "/usr/local/bin" ":"
+                       "/usr/bin" ":"
+                       "/bin" ":"
+                       "/usr/sbin" ":"
+                       "/sbin" ":"))
+
+(setenv "GOROOT" (concat (getenv "HOME") "/Code/go"))
+(setenv "GOPATH" (concat (getenv "HOME") "/Code/go/bin"))
+ 
+(setq exec-path (list (concat (getenv "HOME") "/bin")
+                      (concat (getenv "GOPATH") "/bin")
+                      "/usr/local/bin"
+                      "/usr/bin"
+                      "/bin"
+                      "/usr/sbin"
+                      "/sbin"))
 
 ;; ;;;;;;;;;;;;;;;;;;
 ;; Set up use-package.el and package.el
@@ -33,6 +54,9 @@
                          ;;("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
+(add-to-list 'package-archives
+  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 (package-initialize)
 ;; (package-refresh-contents)
 
@@ -42,9 +66,16 @@
 ;; ;;;;;;;;;;;;;;;;;
 
 ;; currently fucked, but works for the installation
-;; (use-package color-theme-solarized
+;;(use-package color-theme-solarized
 ;;   :ensure t)
-(load-theme 'solarized-dark t)
+;;(load-theme 'solarized-dark t)
+
+(use-package molokai-theme
+  :ensure t)
+
+
+(use-package ag 
+  :ensure t)
 
 (use-package dockerfile-mode
   :ensure t)
@@ -53,6 +84,13 @@
   :ensure t)
 
 (use-package helm-projectile
+  :ensure t)
+
+(use-package graphviz-dot-mode
+  :ensure t)
+
+(use-package go-mode
+  :config (progn (add-hook 'before-save-hook 'gofmt-before-save))
   :ensure t)
 
 (use-package google-this
@@ -93,6 +131,9 @@
 
 (use-package switch-window
   :bind ("C-x o" . switch-window)
+  :ensure t)
+
+(use-package terraform-mode
   :ensure t)
 
 (use-package undo-tree
@@ -140,6 +181,8 @@
   (set-frame-parameter (selected-frame) 'font mine-big-font)
   (add-to-list 'default-frame-alist (cons 'font mine-big-font)))
 
+
+(global-set-key (kbd "<f12>") 'mine-toggle-fullscreen)
 (defun mine-toggle-fullscreen ()
   (interactive)
   (if (frame-parameter (selected-frame) 'fullscreen)
@@ -174,3 +217,12 @@
   (if mode-line-format
       (mode-line-off)
     (mode-line-reset)))
+
+
+;; ;;;;;;;;;;
+;; sbt defuns
+;; ;;;;;;;;;;
+
+(defun sbt-compile ()
+  (interactive)
+  (sbt-command "compile"))
