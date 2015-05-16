@@ -24,17 +24,18 @@
 
 
 (setenv "PATH" (concat (getenv "HOME") "/bin" ":"
+		       (getenv "HOME") "/Code/bin" ":"
                        "/usr/local/bin" ":"
                        "/usr/bin" ":"
                        "/bin" ":"
                        "/usr/sbin" ":"
                        "/sbin" ":"))
 
-(setenv "GOROOT" (concat (getenv "HOME") "/Code/go"))
-(setenv "GOPATH" (concat (getenv "HOME") "/Code/go/bin"))
+(setenv "GOROOT" (concat (getenv "HOME") "/Code/"))
+(setenv "GOPATH" (concat (getenv "HOME") "/Code/bin"))
  
 (setq exec-path (list (concat (getenv "HOME") "/bin")
-                      (concat (getenv "GOPATH") "/bin")
+                      (concat (getenv "HOME") "/Code/bin")
                       "/usr/local/bin"
                       "/usr/bin"
                       "/bin"
@@ -99,6 +100,8 @@
 
 (use-package magit
   :bind ("C-x g" . magit-status)
+  :config (progn
+	    (setq magit-auto-revert-mode nil))
   :ensure t)
 
 (use-package markdown-mode
@@ -115,6 +118,13 @@
             (projectile-global-mode)
             (setq projectile-indexing-method 'native))
   :ensure t)
+
+(use-package recentf
+  :bind (("C-x C-r" . ido-recentf-open))
+  :ensure t
+  :config (progn
+	    (recentf-mode t)
+	    (setq recentf-max-saved-items 50)))
 
 (use-package ruby-mode
   :ensure t)
@@ -226,3 +236,10 @@
 (defun sbt-compile ()
   (interactive)
   (sbt-command "compile"))
+
+(defun ido-recentf-open ()
+  "Use `ido-completing-read' to \\[find-file] a recent file"
+  (interactive)
+  (if (find-file (ido-completing-read "Find recent file: " recentf-list))
+      (message "Opening file...")
+    (message "Aborting")))
